@@ -51,6 +51,7 @@ var options = {
     path: path.resolve(__dirname, 'build'),
     filename: '[name].bundle.js',
     publicPath: ASSET_PATH,
+    libraryTarget: 'umd',
   },
   module: {
     rules: [
