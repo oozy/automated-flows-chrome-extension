@@ -66,7 +66,7 @@ const updateTestFlows = () => {
   const finalTests = testFlows.sort(function (a, b) {
     return new Date(a.time) - new Date(b.time);
   });
-  console.log('updateTestFlows ()', finalTests);
+  console.log('updateTestFlows()', finalTests);
   //TODO: save test in DB
 };
 
