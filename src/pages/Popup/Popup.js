@@ -135,100 +135,100 @@ const Popup = () => {
     );
   };
   return (
-    // <div className="App">
-    //   <button id="start">Start</button>
-    //   <button id="stop">Stop</button>
+    <div className="App">
+      <button id="start">Start</button>
+      <button id="stop">Stop</button>
 
-    //   {!socialPlatforms ? (
-    //     <div className="App-header">
-    //       <div className="Social-Platforms-Logos">
-    //         <div
-    //           className="Social-Btn"
-    //           onClick={() => {
-    //             helloHandeler();
-    //             setSocialPlatforms('tumblr');
-    //           }}
-    //         >
-    //           <img
-    //             src="https://cdn.worldvectorlogo.com/logos/tumblr-icon-1.svg"
-    //             alt="tumblr"
-    //             width="100px"
-    //             height="100px"
-    //           />
-    //         </div>
-    //         <div
-    //           className="Social-Btn"
-    //           onClick={() => {
-    //             helloHandeler();
-    //             setSocialPlatforms('pinterest');
-    //           }}
-    //         >
-    //           <img
-    //             src="https://cdnlogo.com/logos/p/77/pinterest.svg"
-    //             alt="pinterest"
-    //             width="100px"
-    //             height="100px"
-    //           />
-    //         </div>
-    //         <div
-    //           className="Social-Btn"
-    //           onClick={() => {
-    //             helloHandeler();
-    //             setSocialPlatforms('linkedin');
-    //           }}
-    //         >
-    //           <img
-    //             src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Linkedin.svg/1200px-Linkedin.svg.png"
-    //             alt="linkedin"
-    //             width="100px"
-    //             height="100px"
-    //           />
-    //         </div>
-    //       </div>
-    //     </div>
-    //   ) : (
-    //     <div style={{ height: '400px' }}>
-    //       <div className="nameRow">
-    //         <CSVReader
-    //           cssClass="csv-reader-input"
-    //           label="Select CSV with secret Death Star statistics"
-    //           onFileLoaded={(data) => {
-    //             setCsvData((prevCsvs) => [...prevCsvs, ...data]);
-    //           }}
-    //           onError={handleDarkSideForce}
-    //           parserOptions={papaparseOptions}
-    //           inputStyle={{ color: 'red' }}
-    //         />
-    //         {<CsvNames />}
-    //         <button
-    //           onClick={() => {
-    //             handleOpenLinkedin();
-    //           }}
-    //         >
-    //           open Tabs
-    //         </button>
-    //         {showBtn && (
-    //           <>
-    //             <button
-    //               onClick={() => {
-    //                 setCounter(counter + 1);
-    //               }}
-    //             >
-    //               next
-    //             </button>
-    //             <button
-    //               onClick={() => {
-    //                 setCounter(counter - 1);
-    //               }}
-    //             >
-    //               back
-    //             </button>
-    //           </>
-    //         )}
-    //       </div>
-    //     </div>
-    //   )}
-    <div></div>
+      {!socialPlatforms ? (
+        <div className="App-header">
+          <div className="Social-Platforms-Logos">
+            <div
+              className="Social-Btn"
+              onClick={() => {
+                helloHandeler();
+                setSocialPlatforms('tumblr');
+              }}
+            >
+              <img
+                src="https://cdn.worldvectorlogo.com/logos/tumblr-icon-1.svg"
+                alt="tumblr"
+                width="100px"
+                height="100px"
+              />
+            </div>
+            <div
+              className="Social-Btn"
+              onClick={() => {
+                helloHandeler();
+                setSocialPlatforms('pinterest');
+              }}
+            >
+              <img
+                src="https://cdnlogo.com/logos/p/77/pinterest.svg"
+                alt="pinterest"
+                width="100px"
+                height="100px"
+              />
+            </div>
+            <div
+              className="Social-Btn"
+              onClick={() => {
+                helloHandeler();
+                setSocialPlatforms('linkedin');
+              }}
+            >
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Linkedin.svg/1200px-Linkedin.svg.png"
+                alt="linkedin"
+                width="100px"
+                height="100px"
+              />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div style={{ height: '400px' }}>
+          <div className="nameRow">
+            <CSVReader
+              cssClass="csv-reader-input"
+              label="Select CSV with secret Death Star statistics"
+              onFileLoaded={(data) => {
+                setCsvData((prevCsvs) => [...prevCsvs, ...data]);
+              }}
+              onError={handleDarkSideForce}
+              parserOptions={papaparseOptions}
+              inputStyle={{ color: 'red' }}
+            />
+            {<CsvNames />}
+            <button
+              onClick={() => {
+                handleOpenLinkedin();
+              }}
+            >
+              open Tabs
+            </button>
+            {showBtn && (
+              <>
+                <button
+                  onClick={() => {
+                    setCounter(counter + 1);
+                  }}
+                >
+                  next
+                </button>
+                <button
+                  onClick={() => {
+                    setCounter(counter - 1);
+                  }}
+                >
+                  back
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

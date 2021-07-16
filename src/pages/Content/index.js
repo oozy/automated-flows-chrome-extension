@@ -3,8 +3,7 @@ import TestApp from './modules/print';
 
 window.addEventListener('load', myMain, false);
 
-function myMain(evt) {
-  console.log('myMain', evt);
+function myMain() {
   var style = document.createElement('style');
   style.innerHTML = `@import url("https://fonts.googleapis.com/css?family=Roboto");
   @-webkit-keyframes come-in {
@@ -146,9 +145,8 @@ function myMain(evt) {
   // document.getElementById('someElementId').className = 'cssClass';
   div.innerHTML = `<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <div class="floating-container">
-    <div class="floating-button">+</div>
+    <div class="floating-button">Start</div>
     <div class="element-container">
-  
       <button>
       <span class="float-element tooltip-left">
         <i id="start" class="material-icons">Start

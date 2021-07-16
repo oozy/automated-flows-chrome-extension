@@ -3,6 +3,8 @@ const elementValue = (eventTarget) => {
   switch (eventTarget.type) {
     case 'text':
     case 'number':
+    case 'password':
+    case 'email':
       return eventTarget?.value;
     case 'checkbox':
       return eventTarget?.checked;
@@ -41,14 +43,9 @@ class Recorder {
   _record(event, msg) {
     const time = new Date().getTime();
     const action = event.type;
-    if (event?.target?.dataset?.hook) {
+    if (event?.target?.id === 'start' || event?.target?.id === 'stop') return;
+    if (event?.target?.dataset?.hook || event?.target?.id) {
       testFlows.push(generateTest(event, action, time));
-      // console.log(
-      //   t,
-      //   `${msg} - Data has ${this._data[this._type].length} Click on ${
-      //     event?.target?.dataset?.hook
-      //   } dataHook`
-      // );
     } else if (action !== 'mouseover' && event?.target?.nodeName === 'A') {
       testFlows.push(generateTest(event, action, time));
     } else if (event?.target) {
@@ -184,12 +181,13 @@ function generateTest(event, action, time) {
   const eventTarget = event?.target || event;
   const value = elementValue(eventTarget);
   const element = eventTarget?.nodeName.toLowerCase() || 'div';
-  const dataHook = eventTarget?.dataset?.hook || '';
+  const dataHook = eventTarget?.dataset?.hook;
   const pageUrl = document.URL || '';
   const data = {
     element,
     action,
     dataHook,
+    ...(element === 'select' ? { id: eventTarget.id } : {}),
     value,
     time,
     pageUrl,
