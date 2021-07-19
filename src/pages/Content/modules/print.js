@@ -5,6 +5,7 @@ const elementValue = (eventTarget) => {
     case 'number':
     case 'password':
     case 'email':
+    case 'url':
       return eventTarget?.value;
     case 'checkbox':
       return eventTarget?.checked;
@@ -43,14 +44,19 @@ class Recorder {
   _record(event, msg) {
     const time = new Date().getTime();
     const action = event.type;
+    const clientX = event?.clientX || 0;
+    const clientY = event?.clientY || 0;
     if (event?.target?.id === 'start' || event?.target?.id === 'stop') return;
     if (event?.target?.dataset?.hook || event?.target?.id) {
-      testFlows.push(generateTest(event, action, time));
+      testFlows.push(generateTest(event, action, time, clientX, clientY));
     } else if (action !== 'mouseover' && event?.target?.nodeName === 'A') {
-      testFlows.push(generateTest(event, action, time));
+      testFlows.push(generateTest(event, action, time, clientX, clientY));
     } else if (event?.target) {
       const eventTarget = getParentIfNeeded(event);
-      if (eventTarget) testFlows.push(generateTest(eventTarget, action, time));
+      if (eventTarget)
+        testFlows.push(
+          generateTest(eventTarget, action, time, clientX, clientY)
+        );
     }
   }
 
@@ -79,7 +85,9 @@ const updateTestFlows = () => {
   const finalTests = testFlows.sort(function (a, b) {
     return new Date(a.time) - new Date(b.time);
   });
-  console.log('updateTestFlows()', finalTests);
+  const innerWidth = window.innerWidth;
+  const innerHeight = window.innerHeight;
+  return { finalTests, width: innerWidth, height: innerHeight };
   //TODO: save test in DB
 };
 
@@ -116,7 +124,8 @@ class MouseRecorder extends Recorder {
   constructor() {
     super('mouse', ...arguments);
     this._handlers = {
-      // mousemove: this._handleMouseMove.bind(this),
+      mousedown: this._handleMouseDown.bind(this),
+      mouseup: this._handleMouseUp.bind(this),
       click: this._handleClick.bind(this),
       dblclick: this._handleDblClick.bind(this),
       mouseover: this._handleOnMouseOver.bind(this),
@@ -124,7 +133,10 @@ class MouseRecorder extends Recorder {
     };
   }
 
-  _handleMouseMove(e) {
+  _handleMouseDown(e) {
+    this._record(e, 'record mousemove');
+  }
+  _handleMouseUp(e) {
     this._record(e, 'record mousemove');
   }
 
@@ -177,7 +189,7 @@ export default class App {
   }
 }
 
-function generateTest(event, action, time) {
+function generateTest(event, action, time, clientX, clientY) {
   const eventTarget = event?.target || event;
   const value = elementValue(eventTarget);
   const element = eventTarget?.nodeName.toLowerCase() || 'div';
@@ -188,6 +200,7 @@ function generateTest(event, action, time) {
     action,
     dataHook,
     ...(element === 'select' ? { id: eventTarget.id } : {}),
+    ...(dataHook || ''.includes('slider') ? { x: clientX, y: clientY } : {}),
     value,
     time,
     pageUrl,
