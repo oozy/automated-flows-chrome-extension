@@ -6,7 +6,15 @@
   text-align: center;
   height: 500px;
   padding: 10px;
-  background-color: #282c34;
+  background-color: #ffffff;
+  border: 1px solid black;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }
 
 .App-logo {

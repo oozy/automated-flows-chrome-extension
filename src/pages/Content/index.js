@@ -1,9 +1,16 @@
-'use strict';
 import TestApp from './modules/print';
 
-window.addEventListener('load', myMain, false);
+// Listen for messages from the popup.
+chrome.runtime.onMessage.addListener((message, sender, response) => {
+  console.log({ message, sender });
+  if (message.selectedTask) {
+    myMain(message.selectedTask);
+  }
+});
 
-function myMain() {
+// window.addEventListener('load', myMain, false);
+
+function myMain(selectedTask) {
   var style = document.createElement('style');
   style.innerHTML = `@import url("https://fonts.googleapis.com/css?family=Roboto");
   @-webkit-keyframes come-in {
@@ -165,5 +172,5 @@ function myMain() {
 
   document.body.appendChild(div);
 
-  new TestApp({ container: document });
+  new TestApp({ container: document, selectedTask });
 }

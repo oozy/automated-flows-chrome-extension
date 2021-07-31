@@ -1,235 +1,134 @@
-import React from 'react';
-
-import CSVReader from 'react-csv-reader';
-
-import Spinner from '../Spinner/Spinner';
-// import DomApp from '../Background/index.js';
-
+import React, { useEffect, useState } from 'react';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+import { makeStyles } from '@material-ui/core/styles';
 import './Popup.css';
+import axios from 'axios';
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 const Popup = () => {
-  const [csvData, setCsvData] = React.useState([]);
-  const [csvRows, setCsvRows] = React.useState([]);
-  const [showBtn, setShowBtn] = React.useState(false);
-  const [counter, setCounter] = React.useState(0);
-  const [show, setShow] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const classes = useStyles();
+  const [email, setEmail] = useState('');
+  const [extentionKey, setExtentionKey] = useState('');
+  const [companyTasks, setCompanyTasks] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginFaild, setLoginFaild] = useState(false);
+  const [selectedTask, setSelectedTask] = useState('');
 
-  const [socialPlatforms, setSocialPlatforms] = React.useState(null);
-
-  const papaparseOptions = {
-    header: true,
-    dynamicTyping: true,
-    skipEmptyLines: true,
-    transformHeader: (header) => header.toLowerCase().replace(/\W/g, '_'),
-  };
-
-  const opneNewTabLinkedin = (userData) => {
-    const { name, companyname } = userData;
-    const linkedinUrl = `https://www.linkedin.com/search/results/all/?keywords=${name}%20${companyname}&origin=GLOBAL_SEARCH_HEADER`;
-    return linkedinUrl;
-  };
-
-  const opneNewTabTumblr = (userData) => {
-    const { companyname } = userData;
-    const tumblrUrl = `https://www.tumblr.com/search/${companyname}`;
-    return tumblrUrl;
-  };
-
-  const opneNewTabPinterest = (userData) => {
-    const { companyname } = userData;
-    const Pinterest = `https://www.pinterest.com/search/pins/?q=${companyname}&rs=typed&term_meta[]=${companyname}`;
-    return Pinterest;
-  };
-
-  const openTabBy = (userData) => {
-    if (socialPlatforms === 'tumblr') {
-      return opneNewTabTumblr(userData);
-    }
-    if (socialPlatforms === 'pinterest') {
-      return opneNewTabPinterest(userData);
-    }
-    if (socialPlatforms === 'linkedin') {
-      return opneNewTabLinkedin(userData);
-    }
-    return [];
-  };
-  const perChunk = () => {
-    const spitedCsv = csvData.reduce((all, one, i) => {
-      const perChunk = 10;
-      const ch = Math.floor(i / perChunk);
-      all[ch] = [].concat(all[ch] || [], one);
-      return all;
-    }, []);
-    setCsvRows(spitedCsv);
-    setShowBtn(spitedCsv.length > 1);
-  };
-
-  //1. show btn only if i have more then 10 rows
-  //2. btn should triggered a new function that takeing the next 10 rows (next cell value [[10],[10]] )
-  //3.if the array is equal to the array length the btn should be disabled.
-
-  const handleOpenLinkedin = () => {
-    const rowsByCounter = csvRows[counter];
-    const tabUrls = [];
-    for (let index = 0; index < rowsByCounter.length; index++) {
-      const { name, companyname } = rowsByCounter[index];
-      const url = openTabBy({ name, companyname });
-      tabUrls.push(url);
-    }
-
-    chrome.windows.create({
-      // Just use the full URL if you need to open an external page
-      url: tabUrls,
-    });
-  };
-
-  React.useEffect(() => {
-    perChunk();
-    CsvNames();
-  }, [csvData]);
-
-  React.useEffect(() => {
-    CsvNames();
-  }, [csvRows]);
-  React.useEffect(() => {
-    // const data = DomApp(document);
-  }, [document.readyState === 'complete']);
-
-  React.useEffect(() => {
-    if (loading) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
-    }
-  }, [loading]);
-
-  const helloHandeler = () => {
-    setLoading(!loading);
-    setTimeout(() => {
-      setLoading(!loading);
-      setShow(!show);
-    }, 2000);
-  };
-
-  if (loading) return <Spinner />;
-
-  const handleDarkSideForce = () => {};
-  const CsvNames = () => {
-    const data = csvRows[counter];
-    return data ? (
-      <table>
-        <tbody>
-          {data.map((item, i) => {
-            return (
-              <tr key={i} value={item}>
-                <td>{item.name} </td>
-                <td>{item.CompanyName} </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    ) : (
-      []
+  useEffect(() => {
+    chrome.tabs.query(
+      {
+        active: true,
+        currentWindow: true,
+      },
+      (tabs) => {
+        // ...and send a request for the DOM info...
+        chrome.tabs.sendMessage(tabs[0].id, {
+          selectedTask,
+        });
+      }
     );
-  };
+  }, [selectedTask]);
+
   return (
     <div className="App">
-      <button id="start">Start</button>
-      <button id="stop">Stop</button>
+      <div className="login-container">
+        <TextField
+          label="enter company email"
+          variant="outlined"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          label="enter your extention key"
+          type="password"
+          variant="outlined"
+          value={extentionKey}
+          onChange={(e) => setExtentionKey(e.target.value)}
+        />
 
-      {!socialPlatforms ? (
-        <div className="App-header">
-          <div className="Social-Platforms-Logos">
-            <div
-              className="Social-Btn"
-              onClick={() => {
-                helloHandeler();
-                setSocialPlatforms('tumblr');
-              }}
-            >
-              <img
-                src="https://cdn.worldvectorlogo.com/logos/tumblr-icon-1.svg"
-                alt="tumblr"
-                width="100px"
-                height="100px"
-              />
-            </div>
-            <div
-              className="Social-Btn"
-              onClick={() => {
-                helloHandeler();
-                setSocialPlatforms('pinterest');
-              }}
-            >
-              <img
-                src="https://cdnlogo.com/logos/p/77/pinterest.svg"
-                alt="pinterest"
-                width="100px"
-                height="100px"
-              />
-            </div>
-            <div
-              className="Social-Btn"
-              onClick={() => {
-                helloHandeler();
-                setSocialPlatforms('linkedin');
-              }}
-            >
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Linkedin.svg/1200px-Linkedin.svg.png"
-                alt="linkedin"
-                width="100px"
-                height="100px"
-              />
-            </div>
+        <Button variant="contained" color="primary" onClick={handleLogin}>
+          Login
+        </Button>
+      </div>
+      <div style={{ margin: '40px' }}>
+        {isLoading ? (
+          'Loading...'
+        ) : companyTasks ? (
+          <div>
+            <InputLabel id="demo-simple-select-label">
+              {'Select the task you want to test:'}
+            </InputLabel>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-label">Task</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedTask.name}
+                onChange={handleSelectedTask}
+              >
+                {companyTasks.map((task) => {
+                  return <MenuItem value={task.name}>{task.name}</MenuItem>;
+                })}
+              </Select>
+            </FormControl>
           </div>
-        </div>
-      ) : (
-        <div style={{ height: '400px' }}>
-          <div className="nameRow">
-            <CSVReader
-              cssClass="csv-reader-input"
-              label="Select CSV with secret Death Star statistics"
-              onFileLoaded={(data) => {
-                setCsvData((prevCsvs) => [...prevCsvs, ...data]);
-              }}
-              onError={handleDarkSideForce}
-              parserOptions={papaparseOptions}
-              inputStyle={{ color: 'red' }}
-            />
-            {<CsvNames />}
-            <button
-              onClick={() => {
-                handleOpenLinkedin();
-              }}
-            >
-              open Tabs
-            </button>
-            {showBtn && (
-              <>
-                <button
-                  onClick={() => {
-                    setCounter(counter + 1);
-                  }}
-                >
-                  next
-                </button>
-                <button
-                  onClick={() => {
-                    setCounter(counter - 1);
-                  }}
-                >
-                  back
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+        ) : (
+          loginFaild && 'Wrong username or password!'
+        )}
+      </div>
     </div>
   );
+
+  function handleSelectedTask(e) {
+    const selectedTaskName = e.target.value;
+    const selectedTask = companyTasks.find(
+      (task) => task.name === selectedTaskName
+    );
+    if (selectedTask) {
+      setSelectedTask(selectedTask);
+    }
+  }
+
+  async function handleLogin() {
+    setIsLoading(true);
+    try {
+      // test email & extentionKey:
+      // emai: wixteasasdasdzxcxc@gmail.com
+      // extentionKey: 70e4eb77-d588-4d26-b8ba-8de371ec4f9f
+      const { data } = await axios.post(
+        'https://danielad37.wixsite.com/dive-tech/_functions/company_task_by_key',
+        {
+          email,
+          extentionKey,
+        }
+      );
+      if (data.companyTasks) {
+        setCompanyTasks(data.companyTasks);
+      } else {
+        setCompanyTasks(null);
+        setLoginFaild(true);
+      }
+    } catch (e) {
+      setCompanyTasks(null);
+      setLoginFaild(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 };
 
 export default Popup;

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const testFlows = [];
 const elementValue = (eventTarget) => {
   switch (eventTarget.type) {
@@ -81,14 +83,30 @@ class Recorder {
   }
 }
 
-const updateTestFlows = () => {
+const updateTestFlows = async (testFlows, selectedTask) => {
   const finalTests = testFlows.sort(function (a, b) {
     return new Date(a.time) - new Date(b.time);
   });
   const innerWidth = window.innerWidth;
   const innerHeight = window.innerHeight;
+  console.log({ finalTests });
+
+  const { data } = await axios.post(
+    'https://danielad37.wixsite.com/dive-tech/_functions/add_test_to_task',
+    {
+      taskId: selectedTask._id,
+      testObject: { tests: finalTests, width: innerWidth, height: innerHeight },
+    },
+    {
+      headers: {
+        'Content-type': 'text/plain',
+      },
+    }
+  );
+
+  console.log({ data });
+
   return { finalTests, width: innerWidth, height: innerHeight };
-  //TODO: save test in DB
 };
 
 class OnChangedRecorder extends Recorder {
@@ -155,7 +173,7 @@ class MouseRecorder extends Recorder {
 export default class App {
   constructor(params = {}) {
     this._container = params.container;
-
+    this.selectedTask = params.selectedTask;
     this._data = {};
 
     this._keyboardRecorder = new KeyboardRecorder(this._container, this._data);
@@ -168,9 +186,9 @@ export default class App {
       console.log('started');
     };
 
-    document.getElementById('stop').onclick = (e) => {
+    document.getElementById('stop').onclick = async (e) => {
       e.preventDefault();
-      this.stopRecording();
+      await this.stopRecording();
       console.log('stop');
     };
   }
@@ -181,11 +199,11 @@ export default class App {
     this._onChangeRecorder.start();
   }
 
-  stopRecording() {
+  async stopRecording() {
     this._keyboardRecorder.stop();
     this._mouseRecorder.stop();
     this._onChangeRecorder.stop();
-    updateTestFlows(testFlows);
+    await updateTestFlows(testFlows, this.selectedTask);
   }
 }
 
@@ -214,5 +232,6 @@ function generateTest(event, action, time, clientX, clientY) {
       data,
     }
   );
+
   return data;
 }
