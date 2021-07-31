@@ -49,6 +49,12 @@ class Recorder {
     const clientX = event?.clientX || 0;
     const clientY = event?.clientY || 0;
     if (event?.target?.id === 'start' || event?.target?.id === 'stop') return;
+    if (
+      event?.target?.value === '' &&
+      action === 'mouseover' &&
+      event?.target?.dataset === undefined
+    )
+      return;
     if (event?.target?.dataset?.hook || event?.target?.id) {
       testFlows.push(generateTest(event, action, time, clientX, clientY));
     } else if (action !== 'mouseover' && event?.target?.nodeName === 'A') {
