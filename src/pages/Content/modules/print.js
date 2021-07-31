@@ -110,19 +110,23 @@ const updateTestFlows = async (testFlows, selectedTask) => {
 
   console.log({ finalTests });
 
-  // const { data } = await axios.post(
-  //   'https://danielad37.wixsite.com/dive-tech/_functions/add_test_to_task',
-  //   {
-  //     taskId: selectedTask._id,
-  //     testObject: { tests: finalTests, width: innerWidth, height: innerHeight },
-  //   },
-  //   {
-  //     headers: {
-  //       'Content-type': 'text/plain',
-  //     },
-  //   }
-  // );
-  // console.log({ data });
+  document.getElementById('loading').style.display = 'block';
+
+  const { data } = await axios.post(
+    'https://danielad37.wixsite.com/dive-tech/_functions/add_test_to_task',
+    {
+      taskId: selectedTask._id,
+      testObject: { tests: finalTests, width: innerWidth, height: innerHeight },
+    },
+    {
+      headers: {
+        'Content-type': 'text/plain',
+      },
+    }
+  );
+  if (data) document.getElementById('loading').style.display = 'none';
+
+  console.log({ data });
 };
 
 class OnChangedRecorder extends Recorder {
@@ -198,6 +202,12 @@ export default class App {
 
     document.getElementById('start').onclick = (e) => {
       e.preventDefault();
+      document.getElementById('timer').style.display = 'block';
+      (function () {
+        setTimeout(function () {
+          document.getElementById('timer').style.display = 'none';
+        }, 6000);
+      })();
       this.startRecording();
       console.log('started');
     };

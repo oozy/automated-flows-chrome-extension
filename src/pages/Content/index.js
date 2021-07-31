@@ -1,13 +1,13 @@
 import TestApp from './modules/print';
 
-// chrome.runtime.onMessage.addListener((message, sender, response) => {
-//   console.log({ message, sender });
-//   if (message.selectedTask) {
-//     myMain(message.selectedTask);
-//   }
-// });
+chrome.runtime.onMessage.addListener((message, sender, response) => {
+  console.log({ message, sender });
+  if (message.selectedTask) {
+    myMain(message.selectedTask);
+  }
+});
 
-window.addEventListener('load', myMain, false);
+// window.addEventListener('load', myMain, false);
 
 function myMain(selectedTask) {
   var style = document.createElement('style');
@@ -146,9 +146,31 @@ function myMain(selectedTask) {
   document.getElementsByTagName('head')[0].appendChild(style);
 
   var div = document.createElement('div');
-
-  // document.getElementById('someElementId').className = 'cssClass';
   div.innerHTML = `<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <div id="timer" style="width: 85%;
+  margin: 0px auto;
+  display:none;
+  text-align: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 9999;
+  padding-top: 80px;
+  box-sizing: border-box;">
+  <img src="https://media.giphy.com/media/RiEW6mSQqjRiDy51MI/giphy.gif"/></div>
+  <div id="loading" style="width: 85%;
+  margin: 0px auto;
+  display:none;
+  text-align: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 9999;
+  padding-top: 80px;
+  box-sizing: border-box;">
+  <img  src="https://upload.wikimedia.org/wikipedia/commons/5/54/Ajux_loader.gif"/></div>
   <div class="floating-container">
     <div class="floating-button">Start</div>
     <div class="element-container">
