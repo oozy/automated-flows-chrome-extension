@@ -103,10 +103,7 @@ const updateTestFlows = async (testFlows, selectedTask) => {
       },
     }
   );
-
   console.log({ data });
-
-  return { finalTests, width: innerWidth, height: innerHeight };
 };
 
 class OnChangedRecorder extends Recorder {

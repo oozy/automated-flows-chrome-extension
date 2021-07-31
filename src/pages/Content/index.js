@@ -1,6 +1,5 @@
 import TestApp from './modules/print';
 
-// Listen for messages from the popup.
 chrome.runtime.onMessage.addListener((message, sender, response) => {
   console.log({ message, sender });
   if (message.selectedTask) {
@@ -59,7 +58,6 @@ function myMain(selectedTask) {
   }
   
   html, body {
-    background: #eaedf2;
     font-family: 'Roboto', sans-serif;
   }
   
@@ -154,15 +152,11 @@ function myMain(selectedTask) {
   <div class="floating-container">
     <div class="floating-button">Start</div>
     <div class="element-container">
-      <button>
-      <span class="float-element tooltip-left">
-        <i id="start" class="material-icons">Start
-         </i>
-      </button>
+      <span id="start" class="float-element tooltip-left">
+      Start
       </span>
-        <span class="float-element">
-        <i id="stop" class="material-icons">Stop
-  </i>
+        <span id="stop" class="float-element">
+        Stop
       </span>
         <span class="float-element">
         <i class="material-icons">chat</i>
