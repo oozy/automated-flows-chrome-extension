@@ -83,27 +83,46 @@ class Recorder {
   }
 }
 
+const removeDuplicateTests = (tests) => {
+  const isEqualTest = (test1, test2) =>
+    ['dataHook', 'action', 'element'].every(
+      (field) => test1[field] === test2[field]
+    );
+
+  return tests.reduce((acc, currentTest, i) => {
+    const nextTest = tests[i + 1];
+    if (!nextTest || !isEqualTest(currentTest, tests[i + 1])) {
+      acc = [...acc, currentTest];
+    }
+
+    return acc;
+  }, []);
+};
+
 const updateTestFlows = async (testFlows, selectedTask) => {
-  const finalTests = testFlows.sort(function (a, b) {
+  const tests = testFlows.sort(function (a, b) {
     return new Date(a.time) - new Date(b.time);
   });
   const innerWidth = window.innerWidth;
   const innerHeight = window.innerHeight;
+
+  const finalTests = removeDuplicateTests(tests);
+
   console.log({ finalTests });
 
-  const { data } = await axios.post(
-    'https://danielad37.wixsite.com/dive-tech/_functions/add_test_to_task',
-    {
-      taskId: selectedTask._id,
-      testObject: { tests: finalTests, width: innerWidth, height: innerHeight },
-    },
-    {
-      headers: {
-        'Content-type': 'text/plain',
-      },
-    }
-  );
-  console.log({ data });
+  // const { data } = await axios.post(
+  //   'https://danielad37.wixsite.com/dive-tech/_functions/add_test_to_task',
+  //   {
+  //     taskId: selectedTask._id,
+  //     testObject: { tests: finalTests, width: innerWidth, height: innerHeight },
+  //   },
+  //   {
+  //     headers: {
+  //       'Content-type': 'text/plain',
+  //     },
+  //   }
+  // );
+  // console.log({ data });
 };
 
 class OnChangedRecorder extends Recorder {

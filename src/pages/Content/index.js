@@ -1,13 +1,13 @@
 import TestApp from './modules/print';
 
-chrome.runtime.onMessage.addListener((message, sender, response) => {
-  console.log({ message, sender });
-  if (message.selectedTask) {
-    myMain(message.selectedTask);
-  }
-});
+// chrome.runtime.onMessage.addListener((message, sender, response) => {
+//   console.log({ message, sender });
+//   if (message.selectedTask) {
+//     myMain(message.selectedTask);
+//   }
+// });
 
-// window.addEventListener('load', myMain, false);
+window.addEventListener('load', myMain, false);
 
 function myMain(selectedTask) {
   var style = document.createElement('style');
